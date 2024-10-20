@@ -8,7 +8,7 @@ const Header = () => {
         <div className="flex items-center space-x-4">
           <Link to="/">
           <img 
-            src="https://d23qowwaqkh3fj.cloudfront.net/wp-content/uploads/2022/01/srm-logo-white.svg.gzip" 
+            src="https://srmeaswari.ac.in/wp-content/uploads/2022/06/eec-logo-finalized-300x101.png" 
             alt="Easwari Engineering College Logo" 
             className="w-12 h-12"
           />

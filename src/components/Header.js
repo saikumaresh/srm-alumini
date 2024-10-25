@@ -18,6 +18,7 @@ const Header = () => {
           <Link to="/blog" className="hover:text-gray-300 transition-colors duration-300">Blogs</Link>
           <Link to="/events" className="hover:text-gray-300 transition-colors duration-300">Events</Link>
           <Link to="/openings" className="hover:text-gray-300 transition-colors duration-300">Jobs</Link>
+          <Link to="/ats-tracker" className="hover:text-gray-300 transition-colors duration-300">ATS Tracker</Link>
         </nav>
       </div>
     </header>

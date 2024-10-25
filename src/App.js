@@ -13,6 +13,7 @@ import ATSTracker from './pages/ATSTracker';
 import SingleBlogPage from './pages/SingleBlogPage';
 import SingleEventPage from './pages/SingleEventPage';
 import SingleOpeningsPage from './pages/SingleOpeningsPage';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/blog/:id" element={<SingleBlogPage />} />
             <Route path="/event/:id" element={<SingleEventPage />} />
             <Route path="/openings/:id" element={<SingleOpeningsPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </div>
         <Footer />

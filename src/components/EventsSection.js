@@ -1,26 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'; // use Link if you have a route for /events
+import supabase from '../supabaseClient';
 
 const EventsSection = () => {
-  const events = [
-    {
-      title: 'Alumni Meet 2024',
-      date: 'December 10, 2024',
-      location: 'Chennai, India',
-      description: 'Join us for the annual alumni meet to reconnect with old friends, faculty, and mentors.',
-    },
-    {
-      title: 'Tech Talk with Industry Experts',
-      date: 'November 5, 2024',
-      location: 'Virtual Event',
-      description: 'An exclusive session with industry leaders discussing the latest trends in technology.',
-    },
-    {
-      title: 'Career Workshop for Recent Graduates',
-      date: 'October 25, 2024',
-      location: 'New York, USA',
-      description: 'A workshop designed to help recent graduates build successful career paths with alumni mentors.',
-    },
-  ];
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      console.log('Fetching events for section from Supabase...');
+      let { data: eventsData, error } = await supabase
+        .from('events')
+        .select('*')
+        .order('date', { ascending: true });
+
+      if (error) {
+        console.error('Error fetching events:', error.message);
+      } else {
+        console.log('Fetched events for section:', eventsData);
+        setEvents(eventsData);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
     <section className="py-12">
@@ -30,10 +32,12 @@ const EventsSection = () => {
           {events.map((event, index) => (
             <div key={index} className="bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
-              <p className="text-gray-500">{event.date}</p>
+              <p className="text-gray-500">{new Date(event.date).toLocaleDateString()}</p>
               <p className="text-gray-500">{event.location}</p>
               <p className="mt-4 text-gray-700">{event.description}</p>
-              <a href="/events" className="text-blue-600 hover:underline mt-4 block">Learn more</a>
+              <Link to={`/event/${event.id}`} className="text-blue-600 hover:underline mt-4 block">
+  Learn more
+</Link>
             </div>
           ))}
         </div>

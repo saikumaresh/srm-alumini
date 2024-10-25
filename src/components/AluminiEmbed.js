@@ -1,30 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ComposableMap, Geographies, Geography, Marker, ZoomableGroup } from "react-simple-maps";
 import { Tooltip } from 'react-tooltip';
+import supabase from '../supabaseClient';
 
 const geoUrl = "https://raw.githubusercontent.com/lotusms/world-map-data/main/world.json";
 
-const markers = [
-  { coordinates: [-100, 40], value: 9958, color: "#2a81cb" },
-  { coordinates: [2, 46], value: 1774, color: "#2a81cb" },
-  { coordinates: [78, 22], value: 42430, color: "#2a81cb" },
-  { coordinates: [105, 35], value: 414, color: "#2a81cb" },
-  { coordinates: [100, 15], value: 623, color: "#2a81cb" },
-  { coordinates: [30, 0], value: 71, color: "#2a81cb" },
-  { coordinates: [-60, -10], value: 7, color: "#2a81cb" },
-  { coordinates: [-70, -30], value: 4, color: "#2a81cb" },
-  { coordinates: [170, -40], value: 9, color: "#2a81cb" },
-  { coordinates: [10, 15], value: 13, color: "#2a81cb" },
-  { coordinates: [-5, 60], value: 2, color: "#2a81cb" },
-  { coordinates: [20, 60], value: 1, color: "#f39c12" },
-  { coordinates: [120, 45], value: 36, color: "#f39c12" },
-  { coordinates: [25, -25], value: 6, color: "#f39c12" },
-  { coordinates: [35, -5], value: 7, color: "#f39c12" },
-  { coordinates: [135, -25], value: 326, color: "#f39c12" }
-];
-
 const AlumniEmbed = () => {
+  const [markers, setMarkers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filteredMarkers, setFilteredMarkers] = useState([]);
+
+  useEffect(() => {
+    const fetchMarkers = async () => {
+      const { data, error } = await supabase
+        .from('alumni_locations')
+        .select('*');
+
+      if (error) {
+        console.error('Error fetching markers:', error);
+      } else {
+        setMarkers(data);
+        setFilteredMarkers(data); // Initially set filtered markers to all markers
+      }
+    };
+
+    fetchMarkers();
+  }, []);
+
+  useEffect(() => {
+    const results = markers.filter(marker =>
+      marker.value.toString().includes(searchTerm) ||
+      JSON.stringify(marker.coordinates).includes(searchTerm)
+    );
+    setFilteredMarkers(results);
+  }, [searchTerm, markers]);
 
   return (
     <div className="relative w-full h-[60vh] bg-gray-100">
@@ -40,19 +49,19 @@ const AlumniEmbed = () => {
                   key={geo.rsmKey}
                   geography={geo}
                   fill="#EAEAEC"
-                  stroke="#D6D6DA"
+                  stroke="#EAEAEC"
                   className="outline-none"
                 />
               ))
             }
           </Geographies>
-          {markers.map((marker, index) => (
+          {filteredMarkers.map((marker, index) => (
             <Marker key={index} coordinates={marker.coordinates}>
               <circle 
                 r={Math.sqrt(marker.value) / 10}
                 fill={marker.color}
                 stroke="#fff"
-                strokeWidth={2}
+                strokeWidth={1}
                 className="cursor-pointer transition-all duration-300 hover:opacity-80"
                 data-tooltip-id="marker-tooltip"
                 data-tooltip-content={`Alumni: ${marker.value}`}

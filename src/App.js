@@ -9,6 +9,10 @@ import Header from './components/Header';
 import OpeningsPage from './pages/OpeningsPage';
 import EventsPage from './pages/EventsPage';
 import AlumniMap from './pages/AlumniMap';
+import ATSTracker from './pages/ATSTracker';
+import SingleBlogPage from './pages/SingleBlogPage';
+import SingleEventPage from './pages/SingleEventPage';
+import SingleOpeningsPage from './pages/SingleOpeningsPage';
 
 function App() {
   return (
@@ -24,6 +28,10 @@ function App() {
             <Route path="/blog" element={<BlogPage/>} />
             <Route path="/openings" element={<OpeningsPage/>} />
             <Route path="/events" element={<EventsPage/>} />
+            <Route path="/ats-tracker" element={<ATSTracker/>} />
+            <Route path="/blog/:id" element={<SingleBlogPage />} />
+            <Route path="/event/:id" element={<SingleEventPage />} />
+            <Route path="/openings/:id" element={<SingleOpeningsPage />} />
           </Routes>
         </div>
         <Footer />

@@ -9,12 +9,12 @@ const Auth = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [status, setStatus] = useState('Student');
   const [country, setCountry] = useState('');
-  const [countries, setCountries] = useState([]); // State for storing country list
+  const [countries, setCountries] = useState([]); // For storing list of countries
   const [isSignUp, setIsSignUp] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Fetch country list from an API
+  // Fetch list of countries on component mount
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -46,6 +46,19 @@ const Auth = () => {
     return true;
   };
 
+  // Fetch coordinates for the selected country
+  const fetchCoordinates = async (countryName) => {
+    try {
+      const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}`);
+      const data = await response.json();
+      const { latlng } = data[0]; // latlng is an array [latitude, longitude]
+      return latlng;
+    } catch (error) {
+      console.error('Error fetching coordinates:', error);
+      return null;
+    }
+  };
+
   const handleSignUp = async () => {
     setError('');
 
@@ -58,9 +71,25 @@ const Auth = () => {
       const user = signUpData.user;
 
       if (user) {
+        // Fetch coordinates for the selected country
+        const coordinates = await fetchCoordinates(country);
+        if (!coordinates) {
+          setError('Could not fetch coordinates for the selected country.');
+          return;
+        }
+
+        // Insert profile data, including country and coordinates array
         const { error: profileError } = await supabase
           .from('profiles')
-          .insert([{ id: user.id, name, phone_number: phoneNumber, email, status, country }]);
+          .insert([{
+            id: user.id,
+            name,
+            phone_number: phoneNumber,
+            email,
+            status,
+            country,
+            coordinates, // Store coordinates as an array [latitude, longitude]
+          }]);
 
         if (profileError) throw profileError;
 

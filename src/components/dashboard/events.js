@@ -96,12 +96,11 @@ const Events = () => {
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Events</h1>
-
-      {/* Event Form */}
-      <div className="mb-8">
-        <h2 className="text-xl font-bold mb-4">
+    <div className="p-8 bg-gradient-to-b from-gray-100 to-gray-300 min-h-screen">
+      <h1 className="text-4xl font-extrabold mb-10 text-gray-800">Events</h1>
+  
+      <div className="bg-white shadow-xl rounded-xl p-8 mb-10">
+        <h2 className="text-2xl font-semibold mb-6 text-gray-700">
           {editEventId ? 'Edit Event' : 'Create Event'}
         </h2>
         <input
@@ -109,55 +108,54 @@ const Events = () => {
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="block w-full mb-2 p-2 border border-gray-300 rounded"
+          className="w-full mb-4 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="block w-full mb-2 p-2 border border-gray-300 rounded"
+          className="w-full mb-4 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <input
           type="text"
           placeholder="Location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          className="block w-full mb-2 p-2 border border-gray-300 rounded"
+          className="w-full mb-4 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <textarea
           placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="block w-full mb-2 p-2 border border-gray-300 rounded"
+          className="w-full mb-4 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <button
           onClick={editEventId ? handleEditEvent : handleCreateEvent}
-          className="bg-blue-500 text-white p-2 rounded"
+          className="w-full py-2 px-4 bg-teal-500 text-white rounded-lg font-semibold hover:bg-teal-600 transition duration-300 ease-in-out"
         >
           {editEventId ? 'Update Event' : 'Create Event'}
         </button>
       </div>
-
-      {/* Events List */}
+  
       <div>
-        <h2 className="text-xl font-bold mb-4">Your Events</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-gray-700">Your Events</h2>
         {events.length > 0 ? (
           events.map((event) => (
-            <div key={event.id} className="mb-4 p-4 border rounded">
-              <h3 className="text-lg font-bold">{event.title}</h3>
-              <p>{new Date(event.date).toLocaleDateString()}</p>
-              <p>{event.location}</p>
-              <p>{event.description}</p>
-              <div className="mt-2">
+            <div key={event.id} className="mb-6 p-6 bg-white rounded-xl shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800">{event.title}</h3>
+              <p className="text-gray-600 mt-2">{new Date(event.date).toLocaleDateString()}</p>
+              <p className="text-gray-500 mt-1">{event.location}</p>
+              <p className="text-gray-500 mt-1 mb-5">{event.description}</p>
+              <div className="flex space-x-4">
                 <button
                   onClick={() => handleLoadEvent(event)}
-                  className="bg-yellow-500 text-white p-2 rounded mr-2"
+                  className="py-2 px-4 bg-yellow-400 text-white rounded-lg font-semibold hover:bg-yellow-500 transition duration-300 ease-in-out"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDeleteEvent(event.id)}
-                  className="bg-red-500 text-white p-2 rounded"
+                  className="py-2 px-4 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition duration-300 ease-in-out"
                 >
                   Delete
                 </button>
@@ -165,11 +163,12 @@ const Events = () => {
             </div>
           ))
         ) : (
-          <p>No events found.</p>
+          <p className="text-gray-500">No events found.</p>
         )}
       </div>
     </div>
-  );
+  );  
+
 };
 
 export default Events;

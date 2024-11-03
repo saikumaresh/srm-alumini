@@ -39,29 +39,30 @@ const Notifications = () => {
   }, []);
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Notifications</h1>
-
+    <div className="p-8 bg-gradient-to-b from-gray-100 to-gray-300 min-h-screen">
+      <h1 className="text-4xl font-extrabold mb-10 text-gray-800">Notifications</h1>
+  
       {notifications.length > 0 ? (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {notifications.map((notification) => (
             <div
               key={notification.id}
-              className="p-4 border border-gray-300 rounded shadow-md bg-white"
+              className="p-6 border border-gray-200 rounded-xl shadow-lg bg-white"
             >
-              <h2 className="text-lg font-semibold">{notification.title}</h2>
-              <p className="text-gray-700">{notification.message}</p>
-              <p className="text-sm text-gray-500">
+              <h2 className="text-xl font-semibold text-gray-800">{notification.title}</h2>
+              <p className="text-gray-600 mt-2">{notification.message}</p>
+              <p className="text-sm text-gray-500 mt-1">
                 {new Date(notification.created_at).toLocaleString()}
               </p>
             </div>
           ))}
         </div>
       ) : (
-        <p>No notifications found.</p>
+        <p className="text-gray-500">No notifications found.</p>
       )}
     </div>
   );
+  
 };
 
 export default Notifications;

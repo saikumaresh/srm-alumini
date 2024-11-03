@@ -5,6 +5,7 @@ import Blogs from '../components/dashboard/blog';
 import Events from '../components/dashboard/events';
 import JobOpenings from '../components/dashboard/jobOpenings';
 import Notifications from '../components/dashboard/notifications';
+import Chat from '../components/chat/Chat';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null); // Store the authenticated user
@@ -61,51 +62,58 @@ const Dashboard = () => {
       navigate('/');
     }
   };
-
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gradient-to-r from-gray-100 to-gray-200">
       {/* Sidebar */}
-      <aside className="w-64 bg-blue-600 text-white flex flex-col">
-        <h1 className="text-2xl font-bold p-4">Dashboard</h1>
-
-        <nav className="flex-1 p-4">
+      <aside className="w-64 bg-teal-600 text-white flex flex-col shadow-lg">
+        <h1 className="text-3xl font-bold p-6">Dashboard</h1>
+  
+        <nav className="flex-1 p-6">
           <ul>
-            <li className="mb-4">
+            <li className="mb-6">
               <button
                 onClick={() => setSelectedComponent('blogs')}
-                className="hover:underline"
+                className="hover:underline hover:text-teal-200"
               >
                 Blogs
               </button>
             </li>
-            <li className="mb-4">
+            <li className="mb-6">
               <button
                 onClick={() => setSelectedComponent('events')}
-                className="hover:underline"
+                className="hover:underline hover:text-teal-200"
               >
                 Events
               </button>
             </li>
-            <li className="mb-4">
+            <li className="mb-6">
               <button
                 onClick={() => setSelectedComponent('jobOpenings')}
-                className="hover:underline"
+                className="hover:underline hover:text-teal-200"
               >
                 Job Openings
               </button>
             </li>
-            <li className="mb-4">
+            <li className="mb-6">
               <button
                 onClick={() => setSelectedComponent('notifications')}
-                className="hover:underline"
+                className="hover:underline hover:text-teal-200"
               >
                 Notifications
               </button>
             </li>
-            <li className="mb-4">
+            <li className="mb-6">
+              <button
+                onClick={() => setSelectedComponent('messaging')}
+                className="hover:underline hover:text-teal-200"
+              >
+                Chat Now
+              </button>
+            </li>
+            <li className="mt-auto mb-4">
               <button
                 onClick={handleLogout}
-                className="mb-4"
+                className="text-sm font-semibold hover:text-teal-200"
               >
                 Log Out
               </button>
@@ -113,18 +121,20 @@ const Dashboard = () => {
           </ul>
         </nav>
       </aside>
-
+  
       {/* Main Content */}
-      <main className="flex-1 p-8">
-        <h2 className="text-xl font-bold mb-6">Welcome, {user?.email}</h2>
+      <main className="flex-1 p-10 bg-white rounded-tl-3xl shadow-lg">
+        <h2 className="text-2xl font-extrabold mb-8 text-gray-800">Welcome, {tables[0]?.name}</h2>
         {/* Render selected component based on the selected option */}
         {selectedComponent === 'blogs' && <Blogs />}
         {selectedComponent === 'events' && <Events />}
         {selectedComponent === 'jobOpenings' && <JobOpenings />}
         {selectedComponent === 'notifications' && <Notifications />}
+        {selectedComponent === 'messaging' && <Chat />}
       </main>
     </div>
   );
+  
 };
 
 export default Dashboard;

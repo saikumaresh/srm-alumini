@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import supabase from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,18 +7,36 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [isSignUp, setIsSignUp] = useState(true); // Toggle between login and sign-up
+  const [status, setStatus] = useState('Student');
+  const [country, setCountry] = useState('');
+  const [countries, setCountries] = useState([]); // State for storing country list
+  const [isSignUp, setIsSignUp] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Form validation
+  // Fetch country list from an API
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch('https://restcountries.com/v3.1/all');
+        const data = await response.json();
+        const countryNames = data.map((country) => country.name.common).sort();
+        setCountries(countryNames);
+      } catch (err) {
+        console.error("Failed to fetch countries:", err);
+      }
+    };
+
+    fetchCountries();
+  }, []);
+
   const validateForm = () => {
     if (!email || !password) {
       setError('Email and password are required.');
       return false;
     }
-    if (isSignUp && (!name || !phoneNumber)) {
-      setError('Name and phone number are required for sign-up.');
+    if (isSignUp && (!name || !phoneNumber || !country)) {
+      setError('Name, phone number, and country are required for sign-up.');
       return false;
     }
     if (password.length < 6) {
@@ -28,54 +46,49 @@ const Auth = () => {
     return true;
   };
 
-  // Sign up handler
   const handleSignUp = async () => {
-    setError(''); // Clear previous errors
+    setError('');
 
     if (!validateForm()) return;
 
     try {
-      // Sign up the user
       const { data: signUpData, error } = await supabase.auth.signUp({ email, password });
       if (error) throw error;
 
-      const user = signUpData.user; // Extract the user object
+      const user = signUpData.user;
 
       if (user) {
-        // Insert additional user data into the profiles table
         const { error: profileError } = await supabase
           .from('profiles')
-          .insert([{ id: user.id, name, phone_number: phoneNumber, email }]);
+          .insert([{ id: user.id, name, phone_number: phoneNumber, email, status, country }]);
 
         if (profileError) throw profileError;
 
         console.log('Profile created successfully');
-        navigate('/dashboard'); // Navigate to the dashboard
+        navigate('/dashboard');
       }
     } catch (err) {
-      setError(err.message); // Display any errors
+      setError(err.message);
     }
   };
 
-  // Login handler
   const handleLogin = async () => {
-    setError('');  // Clear previous errors
+    setError('');
 
     if (!validateForm()) return;
 
     try {
-      // Log in the user
       const { data: loginData, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
 
-      const user = loginData.user; // Extract the user object
+      const user = loginData.user;
 
       if (user) {
         console.log('User logged in successfully');
-        navigate('/dashboard');  // Navigate to the dashboard
+        navigate('/dashboard');
       }
     } catch (err) {
-      setError(err.message);  // Display any errors
+      setError(err.message);
     }
   };
 
@@ -106,6 +119,28 @@ const Auth = () => {
               required
               className="mb-4 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             />
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              required
+              className="mb-4 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="Student">Student</option>
+              <option value="Alumni">Alumni</option>
+            </select>
+            <select
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              required
+              className="mb-4 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select Country</option>
+              {countries.map((countryName) => (
+                <option key={countryName} value={countryName}>
+                  {countryName}
+                </option>
+              ))}
+            </select>
           </>
         )}
         

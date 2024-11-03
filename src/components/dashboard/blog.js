@@ -14,7 +14,6 @@ const Blogs = () => {
     fetchBlogs();
   }, [userEmail]);
 
-  // Fetch the logged-in user's email
   const fetchUserEmail = async () => {
     const { data: { session }, error } = await supabase.auth.getSession();
 
@@ -25,41 +24,38 @@ const Blogs = () => {
     }
   };
 
-  // Fetch all blogs for the current user
   const fetchBlogs = async () => {
-    if (!userEmail) return; // Don't fetch until userEmail is available
+    if (!userEmail) return;
     const { data, error } = await supabase
       .from('blogs')
       .select('*')
-      .eq('email_id', userEmail) // Query only blogs related to the logged-in user's email
+      .eq('email_id', userEmail)
       .order('created_at', { ascending: false });
 
     if (error) console.error('Error fetching blogs:', error);
     else setBlogs(data);
   };
 
-  // Create a new blog with the user's email_id
   const handleCreateBlog = async () => {
     const { error } = await supabase
       .from('blogs')
-      .insert([{ title, excerpt, content, email_id: userEmail }]); // Insert blog with email_id
+      .insert([{ title, excerpt, content, email_id: userEmail }]);
 
     if (error) console.error('Error creating blog:', error);
     else {
       setTitle('');
       setExcerpt('');
       setContent('');
-      fetchBlogs(); // Refresh blog list
+      fetchBlogs();
     }
   };
 
-  // Edit an existing blog
   const handleEditBlog = async () => {
     const { error } = await supabase
       .from('blogs')
       .update({ title, excerpt, content })
       .eq('id', editBlogId)
-      .eq('email_id', userEmail); // Ensure that the logged-in user can only edit their own blog
+      .eq('email_id', userEmail);
 
     if (error) console.error('Error updating blog:', error);
     else {
@@ -67,23 +63,21 @@ const Blogs = () => {
       setExcerpt('');
       setContent('');
       setEditBlogId(null);
-      fetchBlogs(); // Refresh blog list
+      fetchBlogs();
     }
   };
 
-  // Delete a blog
   const handleDeleteBlog = async (id) => {
     const { error } = await supabase
       .from('blogs')
       .delete()
       .eq('id', id)
-      .eq('email_id', userEmail); // Ensure that the logged-in user can only delete their own blog
+      .eq('email_id', userEmail);
 
     if (error) console.error('Error deleting blog:', error);
-    else fetchBlogs(); // Refresh blog list
+    else fetchBlogs();
   };
 
-  // Load blog for editing
   const handleLoadBlog = (blog) => {
     setTitle(blog.title);
     setExcerpt(blog.excerpt);
@@ -92,12 +86,11 @@ const Blogs = () => {
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Blogs</h1>
-
-      {/* Blog Form */}
-      <div className="mb-8">
-        <h2 className="text-xl font-bold mb-4">
+    <div className="p-8 bg-gradient-to-b from-gray-100 to-gray-300 min-h-screen">
+      <h1 className="text-4xl font-extrabold mb-10 text-gray-800">Blogs</h1>
+  
+      <div className="bg-white shadow-xl rounded-xl p-8 mb-10">
+        <h2 className="text-2xl font-semibold mb-6 text-gray-700">
           {editBlogId ? 'Edit Blog' : 'Create Blog'}
         </h2>
         <input
@@ -105,47 +98,46 @@ const Blogs = () => {
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="block w-full mb-2 p-2 border border-gray-300 rounded"
+          className="w-full mb-4 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <input
           type="text"
           placeholder="Excerpt"
           value={excerpt}
           onChange={(e) => setExcerpt(e.target.value)}
-          className="block w-full mb-2 p-2 border border-gray-300 rounded"
+          className="w-full mb-4 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <textarea
           placeholder="Content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="block w-full mb-2 p-2 border border-gray-300 rounded"
+          className="w-full mb-4 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <button
           onClick={editBlogId ? handleEditBlog : handleCreateBlog}
-          className="bg-blue-500 text-white p-2 rounded"
+          className="w-full py-2 px-4 bg-teal-500 text-white rounded-lg font-semibold hover:bg-teal-600 transition duration-300 ease-in-out"
         >
           {editBlogId ? 'Update Blog' : 'Create Blog'}
         </button>
       </div>
-
-      {/* Blog List */}
+  
       <div>
-        <h2 className="text-xl font-bold mb-4">Your Blogs</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-gray-700">Your Blogs</h2>
         {blogs.length > 0 ? (
           blogs.map((blog) => (
-            <div key={blog.id} className="mb-4 p-4 border rounded">
-              <h3 className="text-lg font-bold">{blog.title}</h3>
-              <p>{blog.excerpt}</p>
-              <div className="mt-2">
+            <div key={blog.id} className="mb-6 p-6 bg-white rounded-xl shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800">{blog.title}</h3>
+              <p className="text-gray-600 mt-2 mb-5">{blog.excerpt}</p>
+              <div className="flex space-x-4">
                 <button
                   onClick={() => handleLoadBlog(blog)}
-                  className="bg-yellow-500 text-white p-2 rounded mr-2"
+                  className="py-2 px-4 bg-yellow-400 text-white rounded-lg font-semibold hover:bg-yellow-500 transition duration-300 ease-in-out"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDeleteBlog(blog.id)}
-                  className="bg-red-500 text-white p-2 rounded"
+                  className="py-2 px-4 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition duration-300 ease-in-out"
                 >
                   Delete
                 </button>
@@ -153,11 +145,11 @@ const Blogs = () => {
             </div>
           ))
         ) : (
-          <p>No blogs found.</p>
+          <p className="text-gray-500">No blogs found.</p>
         )}
       </div>
     </div>
-  );
+  );  
 };
 
 export default Blogs;

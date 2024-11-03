@@ -96,12 +96,11 @@ const JobOpenings = () => {
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Job Openings</h1>
-
-      {/* Job Form */}
-      <div className="mb-8">
-        <h2 className="text-xl font-bold mb-4">
+    <div className="p-8 bg-gradient-to-b from-gray-100 to-gray-300 min-h-screen">
+      <h1 className="text-4xl font-extrabold mb-10 text-gray-800">Job Openings</h1>
+  
+      <div className="bg-white shadow-xl rounded-xl p-8 mb-10">
+        <h2 className="text-2xl font-semibold mb-6 text-gray-700">
           {editJobId ? 'Edit Job' : 'Create Job'}
         </h2>
         <input
@@ -109,55 +108,54 @@ const JobOpenings = () => {
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="block w-full mb-2 p-2 border border-gray-300 rounded"
+          className="w-full mb-4 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <input
           type="date"
           value={postedDate}
           onChange={(e) => setPostedDate(e.target.value)}
-          className="block w-full mb-2 p-2 border border-gray-300 rounded"
+          className="w-full mb-4 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <input
           type="text"
           placeholder="Location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          className="block w-full mb-2 p-2 border border-gray-300 rounded"
+          className="w-full mb-4 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <textarea
           placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="block w-full mb-2 p-2 border border-gray-300 rounded"
+          className="w-full mb-4 p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         <button
           onClick={editJobId ? handleEditJob : handleCreateJob}
-          className="bg-blue-500 text-white p-2 rounded"
+          className="w-full py-2 px-4 bg-teal-500 text-white rounded-lg font-semibold hover:bg-teal-600 transition duration-300 ease-in-out"
         >
           {editJobId ? 'Update Job' : 'Create Job'}
         </button>
       </div>
-
-      {/* Jobs List */}
+  
       <div>
-        <h2 className="text-xl font-bold mb-4">Your Job Openings</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-gray-700">Your Job Openings</h2>
         {jobs.length > 0 ? (
           jobs.map((job) => (
-            <div key={job.id} className="mb-4 p-4 border rounded">
-              <h3 className="text-lg font-bold">{job.title}</h3>
-              <p>{new Date(job.postedDate).toLocaleDateString()}</p>
-              <p>{job.location}</p>
-              <p>{job.description}</p>
-              <div className="mt-2">
+            <div key={job.id} className="mb-6 p-6 bg-white rounded-xl shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800">{job.title}</h3>
+              <p className="text-gray-600 mt-2">{new Date(job.postedDate).toLocaleDateString()}</p>
+              <p className="text-gray-500 mt-1">{job.location}</p>
+              <p className="text-gray-500 mt-1 mb-5">{job.description}</p>
+              <div className="flex space-x-4">
                 <button
                   onClick={() => handleLoadJob(job)}
-                  className="bg-yellow-500 text-white p-2 rounded mr-2"
+                  className="py-2 px-4 bg-yellow-400 text-white rounded-lg font-semibold hover:bg-yellow-500 transition duration-300 ease-in-out"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDeleteJob(job.id)}
-                  className="bg-red-500 text-white p-2 rounded"
+                  className="py-2 px-4 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition duration-300 ease-in-out"
                 >
                   Delete
                 </button>
@@ -165,11 +163,12 @@ const JobOpenings = () => {
             </div>
           ))
         ) : (
-          <p>No job openings found.</p>
+          <p className="text-gray-500">No job openings found.</p>
         )}
       </div>
     </div>
-  );
+  );  
+
 };
 
 export default JobOpenings;

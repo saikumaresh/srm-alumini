@@ -12,21 +12,25 @@ const AlumniEmbed = () => {
 
   useEffect(() => {
     const fetchMarkers = async () => {
-      const { data, error } = await supabase
-        .from('alumni_locations')
-        .select('*');
-
+      const { data, error } = await supabase.rpc('get_alumni_counts');
+    
       if (error) {
         console.error('Error fetching markers:', error);
       } else {
-        setMarkers(data);
-        setFilteredMarkers(data); // Initially set filtered markers to all markers
+        console.log(data); // Log data to verify structure
+        const formattedMarkers = data.map((item) => ({
+          coordinates: [item.coordinates[1], item.coordinates[0]], // Reverse order for map projection
+          value: item.count, // Alumni count
+        }));
+        
+        setMarkers(formattedMarkers);
+        setFilteredMarkers(formattedMarkers);
       }
     };
-
+  
     fetchMarkers();
   }, []);
-
+  
   useEffect(() => {
     const results = markers.filter(marker =>
       marker.value.toString().includes(searchTerm) ||
@@ -41,7 +45,7 @@ const AlumniEmbed = () => {
         projection="geoMercator"
         className="w-full h-full"
       >
-        <ZoomableGroup center={[2, 2]} zoom={2}>
+        <ZoomableGroup center={[0, 20]} zoom={1.5}>
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
               geographies.map((geo) => (
@@ -49,7 +53,7 @@ const AlumniEmbed = () => {
                   key={geo.rsmKey}
                   geography={geo}
                   fill="#EAEAEC"
-                  stroke="#EAEAEC"
+                  stroke="#D6D6DA"
                   className="outline-none"
                 />
               ))
@@ -58,9 +62,9 @@ const AlumniEmbed = () => {
           {filteredMarkers.map((marker, index) => (
             <Marker key={index} coordinates={marker.coordinates}>
               <circle 
-                r={Math.sqrt(marker.value) / 10}
-                fill={marker.color}
-                stroke="#fff"
+                r={Math.sqrt(marker.value) * 4} // Adjust circle size based on alumni count
+                fill="#FF5733" // Use a distinct color for visibility
+                stroke="#333"
                 strokeWidth={1}
                 className="cursor-pointer transition-all duration-300 hover:opacity-80"
                 data-tooltip-id="marker-tooltip"
@@ -70,15 +74,6 @@ const AlumniEmbed = () => {
           ))}
         </ZoomableGroup>
       </ComposableMap>
-      <div className="absolute top-4 left-4 bg-white p-2 rounded-lg shadow-md z-10">
-        <input
-          type="text"
-          placeholder="Search alumni"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
       <Tooltip id="marker-tooltip" />
     </div>
   );
